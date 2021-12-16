@@ -4,22 +4,25 @@ function notify(message){ // notify function, creates a little message above the
     EndTextCommandThefeedPostTicker(true, true);
 }
 
+emit('chat:addSuggestion', '/spawncar', 'Spawns the vehicle name you provide. Example: /sc adder');
+emit('chat:addSuggestion' ,'/sc', 'Alias of /spawncar, spawns the vehicle name you provide. Example: /sc adder');
+
 RegisterCommand('spawncar',  (x, y, msg) => {
+    const args = msg.split(' ');
+    if(!args[1]){return notify('You didn\'t provide a vehicle name to spawn!')}
     if(GetVehiclePedIsIn(GetPlayerPed(-1))){  // if the player is already in a vehicle
         DeleteEntity(GetVehiclePedIsIn(GetPlayerPed(-1))); // delete the vehicle they're currently in
     }
-    const args = msg.split(' ');
-    const vehicleName = args[1];
-    emitNet('disky:spawnCar', vehicleName); // execute server function (for permissions check), pass in vehicleName
+    emitNet('disky:spawnCar', args[1]); // execute server function (for permissions check), pass in vehicleName
 })
 
 RegisterCommand('sc', (x, y, msg) => { // same command, but abbreviated for ease
-    if(GetVehiclePedIsIn(GetPlayerPed(-1))){ // if the player is already in a vehicle
+    const args = msg.split(' ');
+    if(!args[1]){return notify('You didn\'t provide a vehicle name to spawn!')}
+    if(GetVehiclePedIsIn(GetPlayerPed(-1))){  // if the player is already in a vehicle
         DeleteEntity(GetVehiclePedIsIn(GetPlayerPed(-1))); // delete the vehicle they're currently in
     }
-    const args = msg.split(' ');
-    const vehicleName = args[1];
-    emitNet('disky:spawnCar', vehicleName); // execute server function (for permissions check), pass in vehicleName
+    emitNet('disky:spawnCar', args[1]); // execute server function (for permissions check), pass in vehicleName
 })
 
 onNet('disky:spawnVehicle', (vehicleName) => {
